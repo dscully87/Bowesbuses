@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Bowe's Mini Bus Service</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="/assets/css/admin.css" />
+</head>
+<body>
+
+  <!-- =========== LOGIN GATE (display-level only) ===========
+       Real authentication will come with the backend. For now
+       any username/password gets you in — this just shows the
+       intended flow. -->
+  <div class="login-gate" id="login-gate">
+    <div class="login-card">
+      <div class="t">Bowe's</div>
+      <div class="s">Mini Bus Service — Staff &amp; Admin</div>
+      <form id="login-form">
+        <div class="form-field">
+          <label for="login-user">Username</label>
+          <input id="login-user" type="text" autocomplete="username" required />
+        </div>
+        <div class="form-field">
+          <label for="login-pass">Password</label>
+          <input id="login-pass" type="password" autocomplete="current-password" required />
+        </div>
+        <button class="btn btn-primary" type="submit" style="width:100%;">Sign In</button>
+      </form>
+      <div class="demo-note">
+        🔧 <strong>Demo mode:</strong> authentication isn't wired up yet — any
+        username and password will sign you in. Real login arrives with the
+        database backend.
+      </div>
+    </div>
+  </div>
+
+  <!-- =========== ADMIN SHELL =========== -->
+  <div class="admin-shell" id="admin-shell" hidden>
+
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="t">Bowe's</span>
+        <span class="s">Admin Panel</span>
+      </div>
+      <nav aria-label="Admin sections">
+        <button data-panel="dashboard" class="active">📊 Dashboard</button>
+        <button data-panel="bookings">🗒️ Bookings</button>
+        <button data-panel="diary">📅 Availability Diary</button>
+        <button data-panel="fleet">🚌 Fleet</button>
+        <button data-panel="drivers">👤 Drivers</button>
+      </nav>
+      <div class="foot">
+        <p><a href="/">← Back to website</a></p>
+        <p><button id="reset-demo" class="btn btn-ghost btn-sm" style="margin-top:0.5rem;">Reset demo data</button></p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1 id="panel-title">Dashboard</h1>
+          <div class="sub" id="today-label"></div>
+        </div>
+        <button id="logout" class="btn btn-ghost btn-sm">Sign out</button>
+      </div>
+
+      <!-- ======= DASHBOARD ======= -->
+      <section class="panel active" id="panel-dashboard">
+        <div class="stats" id="stat-tiles"></div>
+
+        <div class="card">
+          <h2>Bookings per week (last 8 weeks)</h2>
+          <figure class="chart-figure">
+            <figcaption>All booking requests received, by week created</figcaption>
+            <div class="chart-svg-wrap" id="weekly-chart"></div>
+          </figure>
+        </div>
+
+        <div class="card">
+          <h2>Bookings by status</h2>
+          <div class="status-rows" id="status-breakdown"></div>
+        </div>
+
+        <div class="card">
+          <h2>Next 7 days</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Date</th><th>Customer</th><th>Route</th><th>Pax</th><th>Bus</th><th>Driver</th><th>Status</th></tr>
+              </thead>
+              <tbody id="upcoming-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======= BOOKINGS ======= -->
+      <section class="panel" id="panel-bookings">
+        <div class="card">
+          <h2>Pending review</h2>
+          <p class="hint">New requests from the website land here. Assign a bus and driver, then approve — the diary updates automatically.</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Received</th><th>Customer</th><th>Trip</th><th>Pax</th><th>Assign bus</th><th>Assign driver</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="pending-rows"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>All bookings</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Date</th><th>Customer</th><th>Route</th><th>Pax</th><th>Bus</th><th>Driver</th><th>Status</th><th></th></tr>
+              </thead>
+              <tbody id="all-booking-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======= DIARY ======= -->
+      <section class="panel" id="panel-diary">
+        <div class="card">
+          <h2>Fleet availability — next 14 days</h2>
+          <p class="hint">Built automatically from confirmed bookings and fleet status. Keep the fleet up to date and this diary is always exact.</p>
+          <div class="diary-wrap" id="diary-table"></div>
+          <div class="legend">
+            <span><span class="k" style="background:#e8f6ec;"></span>Free</span>
+            <span><span class="k" style="background:#fbebeb;"></span>Booked (confirmed)</span>
+            <span><span class="k" style="background:#fdf3cd;"></span>In maintenance</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======= FLEET ======= -->
+      <section class="panel" id="panel-fleet">
+        <div class="card">
+          <h2>Add a bus</h2>
+          <form id="add-bus-form" class="form-row">
+            <div class="form-field"><label for="bus-name">Name / model</label><input id="bus-name" required placeholder="e.g. Mercedes Sprinter" /></div>
+            <div class="form-field"><label for="bus-reg">Registration</label><input id="bus-reg" required placeholder="e.g. 231-KK-1234" /></div>
+            <div class="form-field"><label for="bus-type">Type</label>
+              <select id="bus-type"><option>Minibus</option><option>Midi bus</option><option>Coach</option></select>
+            </div>
+            <div class="form-field"><label for="bus-seats">Seats</label><input id="bus-seats" type="number" min="4" max="70" required value="16" /></div>
+            <button class="btn btn-primary" type="submit">Add Bus</button>
+          </form>
+        </div>
+        <div class="card">
+          <h2>Fleet</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Bus</th><th>Reg</th><th>Type</th><th>Seats</th><th>Status</th><th>Notes</th><th></th></tr></thead>
+              <tbody id="fleet-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======= DRIVERS ======= -->
+      <section class="panel" id="panel-drivers">
+        <div class="card">
+          <h2>Add a driver</h2>
+          <form id="add-driver-form" class="form-row">
+            <div class="form-field"><label for="drv-name">Name</label><input id="drv-name" required placeholder="e.g. Pat Bowe" /></div>
+            <div class="form-field"><label for="drv-phone">Phone</label><input id="drv-phone" placeholder="087 XXX XXXX" /></div>
+            <div class="form-field"><label for="drv-licence">Licence</label>
+              <select id="drv-licence"><option>D1</option><option>D</option></select>
+            </div>
+            <button class="btn btn-primary" type="submit">Add Driver</button>
+          </form>
+        </div>
+        <div class="card">
+          <h2>Drivers &amp; weekly availability</h2>
+          <p class="hint">Tick the days each driver is off. Days off are excluded when assigning drivers to bookings.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Driver</th><th>Phone</th><th>Licence</th><th>Days off</th><th>Upcoming assignments</th></tr></thead>
+              <tbody id="driver-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="/assets/js/data.js"></script>
+  <script src="/assets/js/admin.js"></script>
+</body>
+</html>
