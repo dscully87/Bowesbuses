@@ -46,7 +46,6 @@
 
       <nav class="main-nav" id="main-nav" aria-label="Main navigation">
         <a href="/#services">Services</a>
-        <a href="/#fleet">Our Fleet</a>
         <a href="/#why">Why Us</a>
         <a href="/#contact">Contact</a>
         <a class="btn btn-accent nav-cta" href="/booking.html" aria-current="page">Book Now</a>
@@ -57,107 +56,137 @@
 
   <main id="main" class="form-shell">
     <section class="section" style="padding-top: calc(var(--header-h) + 2.5rem);">
-      <div class="container">
+      <div class="container narrow">
 
-        <div class="section-head" data-reveal style="max-width:720px;">
+        <div class="section-head center" data-reveal>
           <span class="eyebrow"><span class="dot"></span> Book online</span>
-          <h2 class="section-title">Let's plan your <span class="hl">group trip</span></h2>
-          <p class="section-sub">
-            Fill in the details below and we'll get back to you to confirm. Every booking is
-            <strong>reviewed by our team</strong> — you'll hear from us shortly after you submit.
-          </p>
+          <h2 class="section-title">Let's get you <span class="hl">on the road</span></h2>
+          <p class="section-sub">A few quick questions — one at a time. You're already on your way.</p>
         </div>
 
-        <div id="booking-success" class="notice success" hidden data-reveal>
-          <span aria-hidden="true">✅</span>
-          <span>
-            <strong>Thanks — your booking request is in!</strong><br />
-            It's now <strong>pending review</strong>. We'll confirm by phone or email as soon as
-            possible. Reference: <span id="booking-ref"></span>
-          </span>
-        </div>
+        <div class="wizard" data-reveal>
 
-        <div class="booking-layout">
-          <!-- ============ FORM ============ -->
-          <form id="booking-form" class="form-card" novalidate data-reveal>
-            <div class="form-grid">
-              <div class="form-field">
-                <label for="bk-name">Your name / group name <span class="req">*</span></label>
-                <input id="bk-name" name="name" type="text" required placeholder="e.g. Murphy Wedding Party" />
-              </div>
-              <div class="form-field">
-                <label for="bk-phone">Phone number <span class="req">*</span></label>
-                <input id="bk-phone" name="phone" type="tel" required placeholder="087 XXX XXXX" />
-              </div>
-              <div class="form-field">
-                <label for="bk-email">Email</label>
-                <input id="bk-email" name="email" type="email" placeholder="you@example.com" />
-              </div>
-              <div class="form-field">
-                <label for="bk-passengers">Number of passengers <span class="req">*</span></label>
-                <input id="bk-passengers" name="passengers" type="number" min="1" max="60" required placeholder="e.g. 14" />
-              </div>
-              <div class="form-field">
-                <label for="bk-date">Travel date <span class="req">*</span></label>
-                <input id="bk-date" name="date" type="date" required />
-                <span class="form-hint">Availability is checked live against our fleet diary.</span>
-              </div>
-              <div class="form-field">
-                <label for="bk-time">Pickup time <span class="req">*</span></label>
-                <input id="bk-time" name="time" type="time" required />
-              </div>
-              <div class="form-field">
-                <label for="bk-pickup">Pickup location <span class="req">*</span></label>
-                <input id="bk-pickup" name="pickup" type="text" required placeholder="e.g. Kilkenny City" />
-              </div>
-              <div class="form-field">
-                <label for="bk-destination">Destination <span class="req">*</span></label>
-                <input id="bk-destination" name="destination" type="text" required placeholder="e.g. Dublin Airport" />
-              </div>
-              <div class="form-field full">
-                <label for="bk-notes">Anything else we should know?</label>
-                <textarea id="bk-notes" name="notes" rows="3" placeholder="Return trip needed? Luggage? Accessibility requirements?"></textarea>
-              </div>
+          <!-- ============ PROGRESS ============ -->
+          <div class="wizard-progress" aria-hidden="false">
+            <div class="wp-top">
+              <span class="wp-label" id="wp-label">Step 1 of 4 — Your trip</span>
+              <span class="wp-pct" id="wp-pct">12%</span>
             </div>
+            <div class="wp-track" role="progressbar" aria-label="Booking progress"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="12" id="wp-bar">
+              <div class="wp-fill" id="wp-fill" style="width:12%"></div>
+            </div>
+          </div>
 
-            <div id="availability-panel" class="notice info" hidden>
-              <span aria-hidden="true">🚌</span>
-              <span style="width:100%;">
-                <strong>Availability for your date:</strong>
-                <div class="avail-list" id="availability-list"></div>
-              </span>
-            </div>
+          <!-- ============ SUCCESS ============ -->
+          <div id="booking-success" class="wizard-done form-card" hidden>
+            <div class="done-icon" aria-hidden="true">🎉</div>
+            <h3>Request sent — you're all set!</h3>
+            <p>
+              Your booking is <strong>pending review</strong>. We'll confirm by phone or email,
+              usually the same day. Your reference is <strong id="booking-ref"></strong>.
+            </p>
+            <a class="btn btn-ghost" href="/">Back to the homepage</a>
+          </div>
+
+          <!-- ============ STEP-THROUGH FORM ============ -->
+          <form id="booking-form" class="form-card" novalidate>
+
+            <!-- Step 1: the trip -->
+            <fieldset class="wizard-step is-active" data-step-title="Your trip">
+              <h3 class="ws-title">Where are we taking you?</h3>
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="bk-pickup">Pickup location <span class="req">*</span></label>
+                  <input id="bk-pickup" name="pickup" type="text" required placeholder="e.g. Kilkenny City" autocomplete="off" />
+                </div>
+                <div class="form-field">
+                  <label for="bk-destination">Destination <span class="req">*</span></label>
+                  <input id="bk-destination" name="destination" type="text" required placeholder="e.g. Dublin Airport" autocomplete="off" />
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Step 2: when -->
+            <fieldset class="wizard-step" data-step-title="Date &amp; time">
+              <h3 class="ws-title">When do you want to travel?</h3>
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="bk-date">Travel date <span class="req">*</span></label>
+                  <input id="bk-date" name="date" type="date" required />
+                  <span class="form-hint">Availability is checked live against our fleet diary.</span>
+                </div>
+                <div class="form-field">
+                  <label for="bk-time">Pickup time <span class="req">*</span></label>
+                  <input id="bk-time" name="time" type="time" required />
+                </div>
+              </div>
+              <div id="availability-panel" class="notice info" hidden>
+                <span aria-hidden="true">🚌</span>
+                <span style="width:100%;">
+                  <strong>Availability for your date:</strong>
+                  <div class="avail-list" id="availability-list"></div>
+                </span>
+              </div>
+            </fieldset>
+
+            <!-- Step 3: the group -->
+            <fieldset class="wizard-step" data-step-title="Your group">
+              <h3 class="ws-title">Who's coming along?</h3>
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="bk-passengers">Number of passengers <span class="req">*</span></label>
+                  <input id="bk-passengers" name="passengers" type="number" min="1" max="60" required placeholder="e.g. 14" />
+                </div>
+                <div class="form-field full">
+                  <label for="bk-notes">Anything else we should know?</label>
+                  <textarea id="bk-notes" name="notes" rows="3" placeholder="Return trip needed? Luggage? Accessibility requirements?"></textarea>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Step 4: contact + review -->
+            <fieldset class="wizard-step" data-step-title="Your details">
+              <h3 class="ws-title">Nearly there — how do we reach you?</h3>
+              <div class="form-grid">
+                <div class="form-field full">
+                  <label for="bk-name">Your name / group name <span class="req">*</span></label>
+                  <input id="bk-name" name="name" type="text" required placeholder="e.g. Murphy Wedding Party" autocomplete="name" />
+                </div>
+                <div class="form-field">
+                  <label for="bk-phone">Phone number <span class="req">*</span></label>
+                  <input id="bk-phone" name="phone" type="tel" required placeholder="087 XXX XXXX" autocomplete="tel" />
+                </div>
+                <div class="form-field">
+                  <label for="bk-email">Email</label>
+                  <input id="bk-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" />
+                </div>
+              </div>
+              <div class="trip-recap" id="trip-recap" hidden>
+                <h4>Your trip at a glance</h4>
+                <ul id="trip-recap-list"></ul>
+              </div>
+            </fieldset>
 
             <div id="booking-error" class="notice warn" hidden></div>
 
-            <div class="form-actions">
-              <button type="submit" class="btn btn-primary btn-lg btn-block">Submit booking request</button>
-              <p class="form-hint">
-                Submitting sends your request for review — it is not a confirmed booking until we contact you.
-              </p>
+            <div class="wizard-nav">
+              <button type="button" class="btn btn-ghost" id="wz-back" hidden>Back</button>
+              <button type="button" class="btn btn-primary btn-lg" id="wz-next">
+                Continue
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button type="submit" class="btn btn-accent btn-lg" id="wz-submit" hidden>Send booking request</button>
             </div>
+            <p class="form-hint center" id="wz-review-hint" hidden>
+              Submitting sends your request for review — it's not confirmed until we contact you.
+            </p>
           </form>
 
-          <!-- ============ SIDEBAR ============ -->
-          <aside class="booking-aside">
-            <div class="aside-card" data-reveal>
-              <h3>What happens next</h3>
-              <ol class="aside-steps">
-                <li><span class="n">1</span> <span>You submit your trip details above.</span></li>
-                <li><span class="n">2</span> <span>Our team checks the fleet and driver diary.</span></li>
-                <li><span class="n">3</span> <span>We confirm by phone or email — usually the same day.</span></li>
-              </ol>
-            </div>
-
-            <div class="aside-card cta" data-reveal style="--reveal-delay:100ms">
-              <h3>Rather talk it through?</h3>
-              <p>Last-minute trip or a bigger group? Give us a call and we'll sort it.</p>
-              <a class="call" href="tel:087XXXXXXX">
-                <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true"><path d="M4 6c0 8 6 14 14 14l2-3-4-2-2 2c-3-1.5-5.5-4-7-7l2-2-2-4-3 2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-                087 XXX XXXX
-              </a>
-            </div>
-          </aside>
+          <p class="wizard-alt">
+            Rather talk it through?
+            <a href="tel:087XXXXXXX">Call us on 087 XXX XXXX</a> and we'll sort it in one go.
+          </p>
         </div>
 
       </div>
@@ -191,7 +220,6 @@
         <div class="footer-col">
           <h4>Explore</h4>
           <a href="/#services">Services</a>
-          <a href="/#fleet">Our fleet</a>
           <a href="/#why">Why us</a>
           <a href="/#reviews">Reviews</a>
         </div>
