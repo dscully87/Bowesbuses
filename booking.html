@@ -5,109 +5,213 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book a Trip — Bowe's Mini Bus Service</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="description" content="Request a minibus or bus booking with Bowe's Mini Bus Service. Check live fleet availability and send your trip details for quick confirmation." />
+  <meta name="theme-color" content="#2b3990" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- flag JS support before paint so reveal animations only apply with JS -->
+  <script>document.documentElement.classList.add("js");</script>
   <link rel="stylesheet" href="/assets/css/styles.css" />
 </head>
 <body>
 
-  <header class="site-header">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ================= HEADER (solid on inner pages) ================= -->
+  <header class="site-header solid" id="site-header">
     <div class="container">
-      <a class="brand" href="/">
-        <span class="brand-top">Bowe's</span>
-        <span class="brand-sub">Mini Bus Service</span>
+      <a class="brand" href="/" aria-label="Bowe's Mini Bus Service — home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="9" width="24" height="13" rx="3" fill="#ffd100"/>
+            <rect x="6.5" y="11.5" width="6" height="4.2" rx="1" fill="#2b3990"/>
+            <rect x="13.5" y="11.5" width="6" height="4.2" rx="1" fill="#2b3990"/>
+            <rect x="20.5" y="11.5" width="4.2" height="4.2" rx="1" fill="#2b3990"/>
+            <circle cx="10" cy="23" r="2.4" fill="#131a44"/>
+            <circle cx="22" cy="23" r="2.4" fill="#131a44"/>
+          </svg>
+        </span>
+        <span class="brand-words">
+          <span class="brand-top">Bowe's</span>
+          <span class="brand-sub">Mini Bus Service</span>
+        </span>
       </a>
-      <nav class="main-nav" aria-label="Main navigation">
-        <a href="/">Home</a>
+
+      <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span></span>
+      </button>
+
+      <nav class="main-nav" id="main-nav" aria-label="Main navigation">
         <a href="/#services">Services</a>
         <a href="/#fleet">Our Fleet</a>
+        <a href="/#why">Why Us</a>
         <a href="/#contact">Contact</a>
-        <a class="nav-cta" href="/booking.html">Book Now</a>
+        <a class="btn btn-accent nav-cta" href="/booking.html" aria-current="page">Book Now</a>
       </nav>
     </div>
+    <div class="nav-backdrop" id="nav-backdrop"></div>
   </header>
 
-  <section class="section">
-    <div class="container" style="max-width: 820px;">
-      <h2 class="section-title">Book Your Trip</h2>
-      <p class="section-sub">
-        Fill in the details below and we'll get back to you to confirm.
-        Every booking is <strong>reviewed by our team</strong> before it's
-        confirmed — you'll hear from us shortly after you submit.
-      </p>
+  <main id="main" class="form-shell">
+    <section class="section" style="padding-top: calc(var(--header-h) + 2.5rem);">
+      <div class="container">
 
-      <div id="booking-success" class="notice success" hidden>
-        ✅ <strong>Thanks — your booking request is in!</strong><br />
-        It's now <strong>pending review</strong>. We'll confirm by phone or
-        email as soon as possible. Reference: <span id="booking-ref"></span>
+        <div class="section-head" data-reveal style="max-width:720px;">
+          <span class="eyebrow"><span class="dot"></span> Book online</span>
+          <h2 class="section-title">Let's plan your <span class="hl">group trip</span></h2>
+          <p class="section-sub">
+            Fill in the details below and we'll get back to you to confirm. Every booking is
+            <strong>reviewed by our team</strong> — you'll hear from us shortly after you submit.
+          </p>
+        </div>
+
+        <div id="booking-success" class="notice success" hidden data-reveal>
+          <span aria-hidden="true">✅</span>
+          <span>
+            <strong>Thanks — your booking request is in!</strong><br />
+            It's now <strong>pending review</strong>. We'll confirm by phone or email as soon as
+            possible. Reference: <span id="booking-ref"></span>
+          </span>
+        </div>
+
+        <div class="booking-layout">
+          <!-- ============ FORM ============ -->
+          <form id="booking-form" class="form-card" novalidate data-reveal>
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="bk-name">Your name / group name <span class="req">*</span></label>
+                <input id="bk-name" name="name" type="text" required placeholder="e.g. Murphy Wedding Party" />
+              </div>
+              <div class="form-field">
+                <label for="bk-phone">Phone number <span class="req">*</span></label>
+                <input id="bk-phone" name="phone" type="tel" required placeholder="087 XXX XXXX" />
+              </div>
+              <div class="form-field">
+                <label for="bk-email">Email</label>
+                <input id="bk-email" name="email" type="email" placeholder="you@example.com" />
+              </div>
+              <div class="form-field">
+                <label for="bk-passengers">Number of passengers <span class="req">*</span></label>
+                <input id="bk-passengers" name="passengers" type="number" min="1" max="60" required placeholder="e.g. 14" />
+              </div>
+              <div class="form-field">
+                <label for="bk-date">Travel date <span class="req">*</span></label>
+                <input id="bk-date" name="date" type="date" required />
+                <span class="form-hint">Availability is checked live against our fleet diary.</span>
+              </div>
+              <div class="form-field">
+                <label for="bk-time">Pickup time <span class="req">*</span></label>
+                <input id="bk-time" name="time" type="time" required />
+              </div>
+              <div class="form-field">
+                <label for="bk-pickup">Pickup location <span class="req">*</span></label>
+                <input id="bk-pickup" name="pickup" type="text" required placeholder="e.g. Kilkenny City" />
+              </div>
+              <div class="form-field">
+                <label for="bk-destination">Destination <span class="req">*</span></label>
+                <input id="bk-destination" name="destination" type="text" required placeholder="e.g. Dublin Airport" />
+              </div>
+              <div class="form-field full">
+                <label for="bk-notes">Anything else we should know?</label>
+                <textarea id="bk-notes" name="notes" rows="3" placeholder="Return trip needed? Luggage? Accessibility requirements?"></textarea>
+              </div>
+            </div>
+
+            <div id="availability-panel" class="notice info" hidden>
+              <span aria-hidden="true">🚌</span>
+              <span style="width:100%;">
+                <strong>Availability for your date:</strong>
+                <div class="avail-list" id="availability-list"></div>
+              </span>
+            </div>
+
+            <div id="booking-error" class="notice warn" hidden></div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-lg btn-block">Submit booking request</button>
+              <p class="form-hint">
+                Submitting sends your request for review — it is not a confirmed booking until we contact you.
+              </p>
+            </div>
+          </form>
+
+          <!-- ============ SIDEBAR ============ -->
+          <aside class="booking-aside">
+            <div class="aside-card" data-reveal>
+              <h3>What happens next</h3>
+              <ol class="aside-steps">
+                <li><span class="n">1</span> <span>You submit your trip details above.</span></li>
+                <li><span class="n">2</span> <span>Our team checks the fleet and driver diary.</span></li>
+                <li><span class="n">3</span> <span>We confirm by phone or email — usually the same day.</span></li>
+              </ol>
+            </div>
+
+            <div class="aside-card cta" data-reveal style="--reveal-delay:100ms">
+              <h3>Rather talk it through?</h3>
+              <p>Last-minute trip or a bigger group? Give us a call and we'll sort it.</p>
+              <a class="call" href="tel:087XXXXXXX">
+                <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true"><path d="M4 6c0 8 6 14 14 14l2-3-4-2-2 2c-3-1.5-5.5-4-7-7l2-2-2-4-3 2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                087 XXX XXXX
+              </a>
+            </div>
+          </aside>
+        </div>
+
       </div>
+    </section>
+  </main>
 
-      <form id="booking-form" class="card" novalidate>
-        <div class="form-grid">
-          <div class="form-field">
-            <label for="bk-name">Your name / group name *</label>
-            <input id="bk-name" name="name" type="text" required placeholder="e.g. Murphy Wedding Party" />
-          </div>
-          <div class="form-field">
-            <label for="bk-phone">Phone number *</label>
-            <input id="bk-phone" name="phone" type="tel" required placeholder="087 XXX XXXX" />
-          </div>
-          <div class="form-field">
-            <label for="bk-email">Email</label>
-            <input id="bk-email" name="email" type="email" placeholder="you@example.com" />
-          </div>
-          <div class="form-field">
-            <label for="bk-passengers">Number of passengers *</label>
-            <input id="bk-passengers" name="passengers" type="number" min="1" max="60" required placeholder="e.g. 14" />
-          </div>
-          <div class="form-field">
-            <label for="bk-date">Travel date *</label>
-            <input id="bk-date" name="date" type="date" required />
-            <span class="form-hint">Availability is checked live against our fleet diary.</span>
-          </div>
-          <div class="form-field">
-            <label for="bk-time">Pickup time *</label>
-            <input id="bk-time" name="time" type="time" required />
-          </div>
-          <div class="form-field">
-            <label for="bk-pickup">Pickup location *</label>
-            <input id="bk-pickup" name="pickup" type="text" required placeholder="e.g. Kilkenny City" />
-          </div>
-          <div class="form-field">
-            <label for="bk-destination">Destination *</label>
-            <input id="bk-destination" name="destination" type="text" required placeholder="e.g. Dublin Airport" />
-          </div>
-          <div class="form-field full">
-            <label for="bk-notes">Anything else we should know?</label>
-            <textarea id="bk-notes" name="notes" rows="3" placeholder="Return trip needed? Luggage? Accessibility requirements?"></textarea>
-          </div>
-        </div>
-
-        <div id="availability-panel" class="notice info" hidden>
-          <strong>Availability for your date:</strong>
-          <div class="avail-list" id="availability-list"></div>
-        </div>
-
-        <div id="booking-error" class="notice warn" hidden></div>
-
-        <p style="margin-top: 1.25rem;">
-          <button type="submit" class="btn btn-blue">Submit Booking Request</button>
-        </p>
-        <p class="form-hint">
-          Submitting sends your request for review — it is not a confirmed
-          booking until we contact you.
-        </p>
-      </form>
-    </div>
-  </section>
-
+  <!-- ================= FOOTER ================= -->
   <footer class="site-footer">
     <div class="container">
-      <div>
-        <span class="brand-top">Bowe's</span>
-        <p>Mini Bus Service — safe, friendly group travel.</p>
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a class="brand" href="/" aria-label="Bowe's Mini Bus Service — home">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none">
+                <rect x="4" y="9" width="24" height="13" rx="3" fill="#ffd100"/>
+                <rect x="6.5" y="11.5" width="6" height="4.2" rx="1" fill="#2b3990"/>
+                <rect x="13.5" y="11.5" width="6" height="4.2" rx="1" fill="#2b3990"/>
+                <rect x="20.5" y="11.5" width="4.2" height="4.2" rx="1" fill="#2b3990"/>
+                <circle cx="10" cy="23" r="2.4" fill="#131a44"/>
+                <circle cx="22" cy="23" r="2.4" fill="#131a44"/>
+              </svg>
+            </span>
+            <span class="brand-words">
+              <span class="brand-top">Bowe's</span>
+              <span class="brand-sub">Mini Bus Service</span>
+            </span>
+          </a>
+          <p>Safe, friendly group travel across Ireland — for weddings, sports, airports, tours and every occasion in between.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a href="/#services">Services</a>
+          <a href="/#fleet">Our fleet</a>
+          <a href="/#why">Why us</a>
+          <a href="/#reviews">Reviews</a>
+        </div>
+        <div class="footer-col">
+          <h4>Book</h4>
+          <a href="/booking.html">Book a trip</a>
+          <a href="/#how">How it works</a>
+          <a href="/#contact">Contact us</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="tel:087XXXXXXX">087 XXX XXXX</a>
+          <a href="mailto:info@example.com">info@example.com</a>
+          <p>Your Town, Ireland</p>
+        </div>
       </div>
-      <div class="footer-admin">
-        <p>&copy; <span id="year"></span> Bowe's Mini Bus Service</p>
-        <p><a href="/admin/">Staff / Admin login</a></p>
+
+      <div class="footer-bottom">
+        <p>&copy; <span id="year"></span> Bowe's Mini Bus Service. All rights reserved.</p>
+        <p><a href="/admin/">Staff &amp; admin login</a></p>
       </div>
     </div>
   </footer>
