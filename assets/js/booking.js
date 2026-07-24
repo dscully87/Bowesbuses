@@ -1,11 +1,23 @@
-/* Bowe's Mini Bus Service — booking page
-   Checks live availability from the fleet diary and submits
-   a booking with status "pending" for admin review. */
+/* Bowe's Mini Bus Service — step-through booking wizard
+   One question at a time with a progress bar. Checks live
+   availability from the fleet diary and submits a booking
+   with status "pending" for admin review. */
 (function () {
   "use strict";
 
   const form = document.getElementById("booking-form");
   if (!form || !window.BowesStore) return;
+
+  const steps = Array.from(form.querySelectorAll(".wizard-step"));
+  const backBtn = document.getElementById("wz-back");
+  const nextBtn = document.getElementById("wz-next");
+  const submitBtn = document.getElementById("wz-submit");
+  const reviewHint = document.getElementById("wz-review-hint");
+
+  const progressLabel = document.getElementById("wp-label");
+  const progressPct = document.getElementById("wp-pct");
+  const progressBar = document.getElementById("wp-bar");
+  const progressFill = document.getElementById("wp-fill");
 
   const dateInput = document.getElementById("bk-date");
   const paxInput = document.getElementById("bk-passengers");
@@ -14,9 +26,84 @@
   const errorBox = document.getElementById("booking-error");
   const successBox = document.getElementById("booking-success");
   const refSpan = document.getElementById("booking-ref");
+  const recapBox = document.getElementById("trip-recap");
+  const recapList = document.getElementById("trip-recap-list");
+
+  // Showing up counts: the bar starts part-filled just for reaching the site.
+  const BASE_PROGRESS = 12;
+  let current = 0;
 
   // can't book in the past
   dateInput.min = BowesStore.todayISO();
+
+  /* ---------- progress bar ---------- */
+
+  function setProgress(pct, label) {
+    progressFill.style.width = pct + "%";
+    progressBar.setAttribute("aria-valuenow", String(pct));
+    progressPct.textContent = pct + "%";
+    progressLabel.textContent = label;
+  }
+
+  function progressFor(stepIndex) {
+    // BASE at step 1, approaching (but not reaching) 100% on the last step;
+    // 100% is reserved for the submitted state.
+    return Math.round(BASE_PROGRESS + (stepIndex / steps.length) * (100 - BASE_PROGRESS));
+  }
+
+  /* ---------- step navigation ---------- */
+
+  function showStep(index, skipFocus) {
+    current = index;
+    steps.forEach((step, i) => step.classList.toggle("is-active", i === index));
+
+    const last = index === steps.length - 1;
+    backBtn.hidden = index === 0;
+    nextBtn.hidden = last;
+    submitBtn.hidden = !last;
+    reviewHint.hidden = !last;
+    errorBox.hidden = true;
+
+    const title = steps[index].getAttribute("data-step-title");
+    setProgress(progressFor(index), "Step " + (index + 1) + " of " + steps.length + " — " + title);
+
+    if (steps[index].contains(availPanel)) refreshAvailability();
+    if (last) buildRecap();
+
+    if (!skipFocus) {
+      const firstField = steps[index].querySelector("input, textarea, select");
+      if (firstField) firstField.focus({ preventScroll: true });
+    }
+  }
+
+  function validateStep(index) {
+    const fields = Array.from(steps[index].querySelectorAll("input, textarea, select"));
+    for (const field of fields) {
+      if (!field.checkValidity()) {
+        errorBox.textContent = "Please fill in the required fields (marked *) before continuing.";
+        errorBox.hidden = false;
+        field.reportValidity();
+        return false;
+      }
+    }
+    errorBox.hidden = true;
+    return true;
+  }
+
+  backBtn.addEventListener("click", () => showStep(current - 1));
+  nextBtn.addEventListener("click", () => {
+    if (validateStep(current)) showStep(current + 1);
+  });
+
+  // Enter moves you forward instead of submitting early
+  form.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && e.target.tagName !== "TEXTAREA" && current < steps.length - 1) {
+      e.preventDefault();
+      nextBtn.click();
+    }
+  });
+
+  /* ---------- live availability (step 2) ---------- */
 
   function refreshAvailability() {
     const date = dateInput.value;
@@ -41,11 +128,27 @@
   dateInput.addEventListener("change", refreshAvailability);
   paxInput.addEventListener("input", refreshAvailability);
 
+  /* ---------- recap (final step) ---------- */
+
+  function buildRecap() {
+    const rows = [
+      ["Route", form.pickup.value.trim() + " → " + form.destination.value.trim()],
+      ["Date", form.date.value],
+      ["Pickup time", form.time.value],
+      ["Passengers", form.passengers.value]
+    ];
+    if (form.notes.value.trim()) rows.push(["Notes", form.notes.value.trim()]);
+    recapList.innerHTML = rows.map(([k, v]) =>
+      "<li><span>" + k + "</span><strong>" + escapeHtml(v) + "</strong></li>"
+    ).join("");
+    recapBox.hidden = false;
+  }
+
+  /* ---------- submit ---------- */
+
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    errorBox.hidden = true;
-
-    if (!form.checkValidity()) {
+    if (!validateStep(current) || !form.checkValidity()) {
       errorBox.textContent = "Please fill in all required fields (marked *).";
       errorBox.hidden = false;
       form.reportValidity();
@@ -65,9 +168,9 @@
     });
 
     refSpan.textContent = record.id.toUpperCase();
+    form.hidden = true;
     successBox.hidden = false;
-    form.reset();
-    availPanel.hidden = true;
+    setProgress(100, "All done — request sent");
     successBox.scrollIntoView({ behavior: "smooth", block: "center" });
   });
 
@@ -76,4 +179,6 @@
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     }[c]));
   }
+
+  showStep(0, true);
 })();
