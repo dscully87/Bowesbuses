@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book a Trip — Bowe's Mini Bus Service</title>
+  <title>Book a Trip | Bowe's Mini Bus Service</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="description" content="Request a minibus or bus booking with Bowe's Mini Bus Service. Check live fleet availability and send your trip details for quick confirmation." />
   <meta name="theme-color" content="#04061a" />
@@ -23,7 +23,7 @@
   <!-- ================= HEADER (solid on inner pages) ================= -->
   <header class="site-header solid" id="site-header">
     <div class="container">
-      <a class="brand" href="/" aria-label="Bowe's Mini Bus Service — home">
+      <a class="brand" href="/" aria-label="Bowe's Mini Bus Service, home">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 32 32" fill="none">
             <rect x="4" y="9" width="24" height="13" rx="3" fill="#ffd100"/>
@@ -61,7 +61,7 @@
         <div class="section-head center" data-reveal>
           <span class="eyebrow"><span class="dot"></span> Book online</span>
           <h2 class="section-title">Let's get you <span class="hl">on the road</span></h2>
-          <p class="section-sub">A few quick questions — one at a time. You're already on your way.</p>
+          <p class="section-sub">A few quick questions, one at a time. You're already on your way.</p>
         </div>
 
         <div class="wizard" data-reveal>
@@ -69,7 +69,7 @@
           <!-- ============ PROGRESS ============ -->
           <div class="wizard-progress" aria-hidden="false">
             <div class="wp-top">
-              <span class="wp-label" id="wp-label">Step 1 of 4 — Your trip</span>
+              <span class="wp-label" id="wp-label">Step 1 of 4: Your trip</span>
               <span class="wp-pct" id="wp-pct">12%</span>
             </div>
             <div class="wp-track" role="progressbar" aria-label="Booking progress"
@@ -81,7 +81,7 @@
           <!-- ============ SUCCESS ============ -->
           <div id="booking-success" class="wizard-done form-card" hidden>
             <div class="done-icon" aria-hidden="true">🎉</div>
-            <h3>Request sent — you're all set!</h3>
+            <h3>Request sent. You're all set!</h3>
             <p>
               Your booking is <strong>pending review</strong>. We'll confirm by phone or email,
               usually the same day. Your reference is <strong id="booking-ref"></strong>.
@@ -98,11 +98,24 @@
               <div class="form-grid">
                 <div class="form-field">
                   <label for="bk-pickup">Pickup location <span class="req">*</span></label>
-                  <input id="bk-pickup" name="pickup" type="text" required placeholder="e.g. Kilkenny City" autocomplete="off" />
+                  <input id="bk-pickup" name="pickup" type="text" required value="Portlaoise" autocomplete="off" />
+                  <span class="form-hint">We're based in Portlaoise, so most trips start here. Change it if you're setting off from somewhere else.</span>
                 </div>
                 <div class="form-field">
                   <label for="bk-destination">Destination <span class="req">*</span></label>
                   <input id="bk-destination" name="destination" type="text" required placeholder="e.g. Dublin Airport" autocomplete="off" />
+                  <div class="chip-row" id="destination-commons" aria-label="Popular destinations">
+                    <span class="chip-row-label">Popular:</span>
+                    <button type="button" class="chip-btn" data-dest="Dublin Airport">Dublin Airport</button>
+                    <button type="button" class="chip-btn" data-dest="Kilkenny">Kilkenny</button>
+                    <button type="button" class="chip-btn" data-dest="3Arena, Dublin">3Arena</button>
+                  </div>
+                </div>
+                <div class="form-field full">
+                  <label class="check-field">
+                    <input id="bk-return" name="returnTrip" type="checkbox" />
+                    <span>I need a return journey (bring us back too)</span>
+                  </label>
                 </div>
               </div>
             </fieldset>
@@ -140,14 +153,14 @@
                 </div>
                 <div class="form-field full">
                   <label for="bk-notes">Anything else we should know?</label>
-                  <textarea id="bk-notes" name="notes" rows="3" placeholder="Return trip needed? Luggage? Accessibility requirements?"></textarea>
+                  <textarea id="bk-notes" name="notes" rows="3" placeholder="Luggage? Accessibility requirements? Multiple pickups?"></textarea>
                 </div>
               </div>
             </fieldset>
 
             <!-- Step 4: contact + review -->
             <fieldset class="wizard-step" data-step-title="Your details">
-              <h3 class="ws-title">Nearly there — how do we reach you?</h3>
+              <h3 class="ws-title">Nearly there. How do we reach you?</h3>
               <div class="form-grid">
                 <div class="form-field full">
                   <label for="bk-name">Your name / group name <span class="req">*</span></label>
@@ -179,7 +192,7 @@
               <button type="submit" class="btn btn-accent btn-lg" id="wz-submit" hidden>Send booking request</button>
             </div>
             <p class="form-hint center" id="wz-review-hint" hidden>
-              Submitting sends your request for review — it's not confirmed until we contact you.
+              Submitting sends your request for review. It's not confirmed until we contact you.
             </p>
           </form>
 
@@ -198,7 +211,7 @@
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
-          <a class="brand" href="/" aria-label="Bowe's Mini Bus Service — home">
+          <a class="brand" href="/" aria-label="Bowe's Mini Bus Service, home">
             <span class="brand-mark" aria-hidden="true">
               <svg viewBox="0 0 32 32" fill="none">
                 <rect x="4" y="9" width="24" height="13" rx="3" fill="#ffd100"/>
@@ -214,7 +227,7 @@
               <span class="brand-sub">Mini Bus Service</span>
             </span>
           </a>
-          <p>Safe, friendly group travel across Ireland — for weddings, sports, airports, tours and every occasion in between.</p>
+          <p>Safe, friendly group travel across Ireland, for weddings, sports, airports, tours and every occasion in between.</p>
         </div>
 
         <div class="footer-col">
@@ -233,7 +246,7 @@
           <h4>Contact</h4>
           <a href="tel:087XXXXXXX">087 XXX XXXX</a>
           <a href="mailto:info@example.com">info@example.com</a>
-          <p>Your Town, Ireland</p>
+          <p>Portlaoise, Co. Laois</p>
         </div>
       </div>
 

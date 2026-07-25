@@ -1,6 +1,6 @@
 /* =========================================================
-   Bowe's Mini Bus Service — public site design system
-   Style: "Liquid Navy" — a deep navy canvas with embedded
+   Bowe's Mini Bus Service - public site design system
+   Style: "Liquid Navy" - a deep navy canvas with embedded
    silver metallic shimmer swirls, glassmorphism and a
    luminous, futuristic electric-gold accent.
      navy   #0A1030   ·   silver foil   ·   gold #FFE25A
@@ -61,7 +61,7 @@
   --bad:     #ff8f8f;
   --bad-bg:  rgba(255, 90, 90, .12);
 
-  /* shadows — deep, with glow */
+  /* shadows - deep, with glow */
   --shadow-sm:  0 2px 10px rgba(2, 4, 16, .5);
   --shadow-md:  0 18px 40px -14px rgba(2, 4, 16, .7), 0 2px 8px rgba(2, 4, 16, .4);
   --shadow-lg:  0 44px 90px -30px rgba(2, 4, 16, .85), 0 12px 30px -14px rgba(2, 4, 16, .6);
@@ -195,7 +195,7 @@ button { font: inherit; }
 
 /* ---------- shared metallic / glass helpers ---------- */
 
-/* embedded silver-foil swirl — reusable surface texture.
+/* embedded silver-foil swirl - reusable surface texture.
    Two counter-rotating conic layers give marbled "swirl" bands;
    navy shows through the gaps so the silver reads as foil on blue. */
 .metal-swirl {
@@ -243,7 +243,7 @@ button { font: inherit; }
   0%   { transform: rotate(360deg) scale(1.1); }
   100% { transform: rotate(0deg)   scale(1.1); }
 }
-/* moving specular highlight — the "shimmer" sweeping across foil */
+/* moving specular highlight - the "shimmer" sweeping across foil */
 .metal-sheen {
   position: absolute;
   inset: 0;
@@ -363,7 +363,7 @@ button { font: inherit; }
 .btn:hover { transform: translateY(-2px); }
 .btn:active { transform: translateY(0); }
 
-/* gold — the primary futuristic accent, with metallic sheen sweep */
+/* gold - the primary futuristic accent, with metallic sheen sweep */
 .btn-accent {
   --btn-fg: #211a00;
   background: linear-gradient(135deg, var(--gold-hi) 0%, var(--gold) 38%, var(--gold-deep) 100%);
@@ -380,7 +380,7 @@ button { font: inherit; }
 .btn-accent:hover::after { background-position: -40% 0; }
 .btn-accent:hover { box-shadow: 0 0 0 1px rgba(255,226,90,.7), 0 20px 54px -10px rgba(255,210,70,.65); }
 
-/* primary — cool platinum glass */
+/* primary - cool platinum glass */
 .btn-primary {
   --btn-fg: var(--nav-900);
   background: linear-gradient(135deg, #ffffff 0%, var(--silver-200) 45%, var(--silver-300) 100%);
@@ -608,7 +608,7 @@ body.nav-open .nav-backdrop { opacity: 1; visibility: visible; }
 }
 .hero-trust .t-label { font-size: .82rem; color: var(--muted); font-weight: 600; margin-top: .25rem; }
 
-/* hero visual — the "phone-back" liquid-metal panel */
+/* hero visual - the "phone-back" liquid-metal panel */
 .hero-visual { position: relative; }
 .metal-panel {
   position: relative;
@@ -1033,6 +1033,39 @@ body.nav-open .nav-backdrop { opacity: 1; visibility: visible; }
 .form-field input[type="time"] { color-scheme: dark; }
 .form-field textarea { resize: vertical; min-height: 90px; }
 .form-hint { font-size: .82rem; color: var(--muted); }
+
+/* quick-pick destination chips */
+.chip-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-top: .55rem; }
+.chip-row-label { font-size: .82rem; color: var(--muted); }
+.chip-btn {
+  font: inherit; font-size: .85rem; font-weight: 600; cursor: pointer;
+  color: var(--text-2);
+  background: rgba(6, 10, 32, .55);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  padding: .32rem .85rem;
+  transition: border-color .2s var(--ease-out), color .2s var(--ease-out), background .2s var(--ease-out);
+}
+.chip-btn:hover { color: var(--text); border-color: var(--gold); }
+.chip-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.chip-btn.is-active {
+  color: var(--nav-950);
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+/* inline checkbox field (e.g. return journey) */
+.check-field {
+  display: flex; flex-direction: row;
+  align-items: center; gap: .6rem;
+  cursor: pointer;
+  font-weight: 500 !important;
+}
+.check-field input[type="checkbox"] {
+  width: 1.15rem; height: 1.15rem; flex: 0 0 auto;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
 
 .form-actions { margin-top: 1.6rem; display: flex; flex-direction: column; gap: .8rem; }
 .form-hint.center { text-align: center; margin-top: .9rem; }

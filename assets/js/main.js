@@ -1,4 +1,4 @@
-/* Bowe's Mini Bus Service — public site scripts */
+/* Bowe's Mini Bus Service - public site scripts */
 (function () {
   "use strict";
 
