@@ -1,4 +1,4 @@
-/* Bowe's Mini Bus Service — step-through booking wizard
+/* Bowe's Mini Bus Service - step-through booking wizard
    One question at a time with a progress bar. Checks live
    availability from the fleet diary and submits a booking
    with status "pending" for admin review. */
@@ -21,6 +21,9 @@
 
   const dateInput = document.getElementById("bk-date");
   const paxInput = document.getElementById("bk-passengers");
+  const destInput = document.getElementById("bk-destination");
+  const returnInput = document.getElementById("bk-return");
+  const destCommons = document.getElementById("destination-commons");
   const availPanel = document.getElementById("availability-panel");
   const availList = document.getElementById("availability-list");
   const errorBox = document.getElementById("booking-error");
@@ -65,7 +68,7 @@
     errorBox.hidden = true;
 
     const title = steps[index].getAttribute("data-step-title");
-    setProgress(progressFor(index), "Step " + (index + 1) + " of " + steps.length + " — " + title);
+    setProgress(progressFor(index), "Step " + (index + 1) + " of " + steps.length + ": " + title);
 
     if (steps[index].contains(availPanel)) refreshAvailability();
     if (last) buildRecap();
@@ -103,6 +106,24 @@
     }
   });
 
+  /* ---------- popular destinations (step 1) ---------- */
+
+  if (destCommons) {
+    destCommons.addEventListener("click", (e) => {
+      const chip = e.target.closest(".chip-btn");
+      if (!chip) return;
+      destInput.value = chip.getAttribute("data-dest");
+      destCommons.querySelectorAll(".chip-btn").forEach(c =>
+        c.classList.toggle("is-active", c === chip));
+      destInput.focus({ preventScroll: true });
+    });
+    // typing your own destination clears the highlighted chip
+    destInput.addEventListener("input", () => {
+      destCommons.querySelectorAll(".chip-btn").forEach(c =>
+        c.classList.toggle("is-active", c.getAttribute("data-dest") === destInput.value));
+    });
+  }
+
   /* ---------- live availability (step 2) ---------- */
 
   function refreshAvailability() {
@@ -117,7 +138,7 @@
       availList.innerHTML =
         '<span class="avail-pill none">No suitable bus free on this date' +
         (pax ? " for " + pax + " passengers" : "") +
-        " — submit anyway and we'll see what we can arrange, or try another date.</span>";
+        ". Submit anyway and we'll see what we can arrange, or try another date.</span>";
     } else {
       availList.innerHTML = buses.map(b =>
         '<span class="avail-pill">' + escapeHtml(b.name) + " · " + b.seats + " seats</span>"
@@ -133,6 +154,7 @@
   function buildRecap() {
     const rows = [
       ["Route", form.pickup.value.trim() + " → " + form.destination.value.trim()],
+      ["Return journey", returnInput && returnInput.checked ? "Yes" : "No"],
       ["Date", form.date.value],
       ["Pickup time", form.time.value],
       ["Passengers", form.passengers.value]
@@ -164,13 +186,14 @@
       time: form.time.value,
       pickup: form.pickup.value.trim(),
       destination: form.destination.value.trim(),
+      returnTrip: returnInput ? returnInput.checked : false,
       notes: form.notes.value.trim()
     });
 
     refSpan.textContent = record.id.toUpperCase();
     form.hidden = true;
     successBox.hidden = false;
-    setProgress(100, "All done — request sent");
+    setProgress(100, "All done, request sent");
     successBox.scrollIntoView({ behavior: "smooth", block: "center" });
   });
 

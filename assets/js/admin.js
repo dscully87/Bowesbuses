@@ -1,5 +1,5 @@
 /* =========================================================
-   Bowe's Mini Bus Service — admin panel
+   Bowe's Mini Bus Service - admin panel
    Runs entirely in the browser on demo data (see data.js).
    Swap BowesStore for real API calls when the backend lands.
    ========================================================= */
@@ -228,7 +228,7 @@
       <tr>
         <td>${fmtDate(b.date)}<div class="small">${esc(b.time)}</div></td>
         <td>${esc(b.name)}</td>
-        <td>${esc(b.pickup)} → ${esc(b.destination)}</td>
+        <td>${esc(b.pickup)} → ${esc(b.destination)}${b.returnTrip ? " (return)" : ""}</td>
         <td>${b.passengers}</td>
         <td>${busName(data, b.busId)}</td>
         <td>${driverName(data, b.driverId)}</td>
@@ -239,11 +239,11 @@
 
   function busName(data, id) {
     const b = data.fleet.find(x => x.id === id);
-    return b ? esc(b.name) : "<span class='small'>—</span>";
+    return b ? esc(b.name) : "<span class='small'>Not set</span>";
   }
   function driverName(data, id) {
     const d = data.drivers.find(x => x.id === id);
-    return d ? esc(d.name) : "<span class='small'>—</span>";
+    return d ? esc(d.name) : "<span class='small'>Not set</span>";
   }
 
   /* ---------- bookings: pending review ---------- */
@@ -259,19 +259,19 @@
       return `<tr data-id="${b.id}">
         <td>${fmtDate(b.createdAt || b.date)}</td>
         <td>${esc(b.name)}<div class="small">${esc(b.phone)}${b.email ? " · " + esc(b.email) : ""}</div></td>
-        <td>${fmtDate(b.date)} ${esc(b.time)}<div class="small">${esc(b.pickup)} → ${esc(b.destination)}</div>
+        <td>${fmtDate(b.date)} ${esc(b.time)}<div class="small">${esc(b.pickup)} → ${esc(b.destination)}${b.returnTrip ? " (return)" : ""}</div>
             ${b.notes ? `<div class="small">📝 ${esc(b.notes)}</div>` : ""}</td>
         <td>${b.passengers}</td>
         <td>
           <select class="inline-assign assign-bus">
-            <option value="">— select bus —</option>
+            <option value="">Select a bus</option>
             ${buses.map(x => `<option value="${x.id}">${esc(x.name)} (${x.seats})</option>`).join("")}
           </select>
           ${buses.length === 0 ? `<div class="small">⚠ no suitable bus free</div>` : ""}
         </td>
         <td>
           <select class="inline-assign assign-driver">
-            <option value="">— select driver —</option>
+            <option value="">Select a driver</option>
             ${drivers.map(x => `<option value="${x.id}">${esc(x.name)}</option>`).join("")}
           </select>
           ${drivers.length === 0 ? `<div class="small">⚠ no driver free</div>` : ""}
@@ -294,7 +294,7 @@
       const busId = row.querySelector(".assign-bus").value;
       const driverId = row.querySelector(".assign-driver").value;
       if (!busId || !driverId) {
-        alert("Assign both a bus and a driver before approving — only free ones are listed.");
+        alert("Assign both a bus and a driver before approving. Only free ones are listed.");
         return;
       }
       BowesStore.updateBooking(id, { status: "confirmed", busId, driverId });
@@ -315,7 +315,7 @@
       <tr data-id="${b.id}">
         <td>${fmtDate(b.date)}<div class="small">${esc(b.time)}</div></td>
         <td>${esc(b.name)}</td>
-        <td>${esc(b.pickup)} → ${esc(b.destination)}</td>
+        <td>${esc(b.pickup)} → ${esc(b.destination)}${b.returnTrip ? " (return)" : ""}</td>
         <td>${b.passengers}</td>
         <td>${busName(data, b.busId)}</td>
         <td>${driverName(data, b.driverId)}</td>
@@ -424,7 +424,7 @@
             <input type="checkbox" class="dayoff" value="${day}" ${d.daysOff.includes(day) ? "checked" : ""}>${day.slice(0, 3)}
           </label>`).join("")}</td>
         <td>${upcoming.length ? upcoming.map(b =>
-          `<div class="small">${fmtDate(b.date)} — ${esc(b.name)} (${busName(data, b.busId)})</div>`).join("")
+          `<div class="small">${fmtDate(b.date)} · ${esc(b.name)} (${busName(data, b.busId)})</div>`).join("")
           : "<span class='small'>none</span>"}</td>
       </tr>`;
     }).join("");
