@@ -45,8 +45,11 @@ Search the HTML for `PLACEHOLDER` / `087 XXX XXXX`:
 - **Phone number**: `index.html` contact strip + footer areas
 - **Email address**: `index.html` contact strip
 - **Location / town**: `index.html` contact strip (currently set to Portlaoise, Co. Laois)
-- **Photos**: every dashed `photo-placeholder` box (gallery + fleet cards);
-  drop real images into `assets/img/` and swap the divs for `<img>` tags
+- **Hero photo**: `assets/img/hero-minibus-*.jpg` is a free stock placeholder
+  ([Pexels #33693159](https://www.pexels.com/photo/group-of-men-boarding-a-white-minibus-outdoors-33693159/),
+  Pexels licence). Replace both sizes with a photo of the Bowe's fleet, keeping the file names
+- **Reviews and stats**: the ratings, passenger counts and testimonials are demo
+  content. Replace with real reviews before going live
 
 ## Admin login
 
