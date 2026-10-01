@@ -32,8 +32,6 @@
   const recapBox = document.getElementById("trip-recap");
   const recapList = document.getElementById("trip-recap-list");
 
-  // Showing up counts: the bar starts part-filled just for reaching the site.
-  const BASE_PROGRESS = 12;
   let current = 0;
 
   // can't book in the past
@@ -49,9 +47,8 @@
   }
 
   function progressFor(stepIndex) {
-    // BASE at step 1, approaching (but not reaching) 100% on the last step;
-    // 100% is reserved for the submitted state.
-    return Math.round(BASE_PROGRESS + (stepIndex / steps.length) * (100 - BASE_PROGRESS));
+    // share of steps completed; 100% is reserved for the submitted state
+    return Math.round((stepIndex / steps.length) * 100);
   }
 
   /* ---------- step navigation ---------- */
@@ -79,19 +76,47 @@
     }
   }
 
+  function fieldLabel(field) {
+    const label = form.querySelector('label[for="' + field.id + '"]');
+    return label ? label.textContent.replace("*", "").trim().toLowerCase() : "this field";
+  }
+
+  // a message that names the field and says how to fix it
+  function messageFor(field) {
+    const v = field.validity;
+    if (v.valueMissing) return "Please add your " + fieldLabel(field) + ".";
+    if (field.id === "bk-date" && v.rangeUnderflow) return "That date has passed. Pick today or a later date.";
+    if (field.id === "bk-passengers" && v.rangeOverflow)
+      return "We can take up to 60 passengers per booking. For a bigger group, call us and we'll split it across buses.";
+    if (field.id === "bk-passengers" && (v.rangeUnderflow || v.badInput)) return "Enter how many passengers are travelling (at least 1).";
+    if (field.id === "bk-email" && v.typeMismatch) return "That email address doesn't look right. Check it, or leave it blank and we'll phone you.";
+    return "Check your " + fieldLabel(field) + ": " + field.validationMessage;
+  }
+
   function validateStep(index) {
     const fields = Array.from(steps[index].querySelectorAll("input, textarea, select"));
+    fields.forEach((f) => f.removeAttribute("aria-invalid"));
     for (const field of fields) {
       if (!field.checkValidity()) {
-        errorBox.textContent = "Please fill in the required fields (marked *) before continuing.";
+        errorBox.textContent = messageFor(field);
         errorBox.hidden = false;
-        field.reportValidity();
+        field.setAttribute("aria-invalid", "true");
+        field.setAttribute("aria-describedby", "booking-error");
+        field.focus();
         return false;
       }
     }
     errorBox.hidden = true;
     return true;
   }
+
+  // clear the error state as soon as the field is fixed
+  form.addEventListener("input", (e) => {
+    if (e.target.getAttribute("aria-invalid") === "true" && e.target.checkValidity()) {
+      e.target.removeAttribute("aria-invalid");
+      errorBox.hidden = true;
+    }
+  });
 
   backBtn.addEventListener("click", () => showStep(current - 1));
   nextBtn.addEventListener("click", () => {
@@ -113,8 +138,8 @@
       const chip = e.target.closest(".chip-btn");
       if (!chip) return;
       destInput.value = chip.getAttribute("data-dest");
-      destCommons.querySelectorAll(".chip-btn").forEach(c =>
-        c.classList.toggle("is-active", c === chip));
+      // fire input so the chip highlight and any error state update
+      destInput.dispatchEvent(new Event("input", { bubbles: true }));
       destInput.focus({ preventScroll: true });
     });
     // typing your own destination clears the highlighted chip
@@ -155,7 +180,7 @@
     const rows = [
       ["Route", form.pickup.value.trim() + " → " + form.destination.value.trim()],
       ["Return journey", returnInput && returnInput.checked ? "Yes" : "No"],
-      ["Date", form.date.value],
+      ["Date", formatDate(form.date.value)],
       ["Pickup time", form.time.value],
       ["Passengers", form.passengers.value]
     ];
@@ -166,15 +191,25 @@
     recapBox.hidden = false;
   }
 
+  // "2026-10-14" -> "Wed 14 Oct 2026"
+  function formatDate(iso) {
+    const d = new Date(iso + "T00:00:00");
+    if (isNaN(d)) return iso;
+    return d.toLocaleDateString("en-IE", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  }
+
   /* ---------- submit ---------- */
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    if (!validateStep(current) || !form.checkValidity()) {
-      errorBox.textContent = "Please fill in all required fields (marked *).";
-      errorBox.hidden = false;
-      form.reportValidity();
-      return;
+    // re-check every step; jump back to the first one with a problem
+    for (let i = 0; i < steps.length; i++) {
+      const bad = Array.from(steps[i].querySelectorAll("input, textarea, select")).some(f => !f.checkValidity());
+      if (bad) {
+        if (i !== current) showStep(i, true);
+        validateStep(i);
+        return;
+      }
     }
 
     const record = BowesStore.addBooking({
