@@ -479,7 +479,7 @@ body.nav-open .nav-backdrop { opacity: 1; visibility: visible; }
   height: auto;
   aspect-ratio: 5 / 4;
   object-fit: cover;
-  object-position: 100% 50%;   /* keep the open door and the waiting group in frame */
+  object-position: 70% 50%;   /* keep the passengers in frame */
   border-radius: var(--r-xl);
   box-shadow: var(--shadow-lg);
   background: var(--bg-2);
